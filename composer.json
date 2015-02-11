@@ -1,0 +1,37 @@
+{
+    "name": "mobizon/mobizon-php",
+    "type": "library",
+    "version": "1.0.0",
+    "description": "A PHP library for communicating with the Mobizon API",
+    "keywords": [
+        "mobizon",
+        "sms",
+        "api"
+    ],
+    "homepage": "https://github.com/mobizon/mobizon-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmitriy Teslitsky",
+            "email": "dmitry@teslitsky.info",
+            "homepage": "http://teslitsky.info",
+            "role": "Developer"
+        },
+        {
+            "name": "Ivan Shcherbak",
+            "email": "cubezero@mobizon.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/mobizon/mobizon-php/issues"
+    },
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "Mobizon": "src"
+        }
+    }
+}
