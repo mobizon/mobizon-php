@@ -249,7 +249,7 @@ class MobizonApi
             $subQuery = explode('.', $subParam);
             $data = $this->data;
             foreach ($subQuery as $subKey) {
-                if (property_exists($data, $subKey)) {
+                if (is_object($data) && property_exists($data, $subKey)) {
                     $data = $data->{$subKey};
                 } else {
                     return null;
