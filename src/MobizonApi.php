@@ -251,6 +251,8 @@ class MobizonApi
             foreach ($subQuery as $subKey) {
                 if (is_object($data) && property_exists($data, $subKey)) {
                     $data = $data->{$subKey};
+                } elseif (is_array($data) && array_key_exists($subKey, $data)) {
+                    $data = $data[$subKey];
                 } else {
                     return null;
                 }
