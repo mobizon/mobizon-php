@@ -29,3 +29,7 @@
 В разделе [docs/examples](https://github.com/mobizon/mobizon-php/tree/master/docs/examples) мы начали собирать для Вас
 готовые примеры реализации типичных сценариев работы с API на Вашем сайте. Если у Вас есть собственные рабочие
 варианты использования, будем рады разместить их в нашем репо.
+
+* [Получение баланса текущего пользователя](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/balance.php)
+* [Отправка SMS сообщения](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_message.php)
+* [Получение списка доступных для использования подписей (альфаимен)](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/alphanames.php)
