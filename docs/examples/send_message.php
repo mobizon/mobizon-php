@@ -5,6 +5,8 @@
  * @time 4:42 PM
  */
 
+require_once __DIR__ . '/../../src/MobizonApi.php';
+
 echo 'Send message...' . PHP_EOL;
 $alphaname = 'Mobizon';
 if ($api->call('message',
