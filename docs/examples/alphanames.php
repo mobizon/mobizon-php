@@ -5,10 +5,9 @@
  * @time 4:37 PM
  */
 
-require_once __DIR__ . '/../../src/MobizonApi.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 
-$apiKey = '65108e474c6a0af679629d9559609ca81cd3f929';
-$api = new Mobizon\MobizonApi($apiKey);
+$api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');
 
 echo 'Fetch all user alphanames...' . PHP_EOL;
 if ($api->call('alphaname', 'list')) {

@@ -5,7 +5,9 @@
  * @time 4:42 PM
  */
 
-require_once __DIR__ . '/../../src/MobizonApi.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
+
+$api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');
 
 echo 'Send message...' . PHP_EOL;
 $alphaname = 'Mobizon';
