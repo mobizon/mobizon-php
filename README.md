@@ -1,5 +1,4 @@
-[Русский](#ru)
-[English](#en)
+[Русский](#ru) | [English](#en)
 <a name="ru"/>
 # Библиотека для работы с АПИ Mobizon
 
@@ -40,7 +39,7 @@
 ---
 
 <a name="en"/>
-# PHP library for communicating with Mobizon SMS HTTP API {#en}
+# PHP library for communicating with Mobizon SMS HTTP API
 
 [PHP class](https://github.com/mobizon/mobizon-php/blob/master/src/MobizonApi.php) for communication with SMS API Mobizon - mobizon-php.
 
