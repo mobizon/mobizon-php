@@ -89,10 +89,11 @@ class MobizonApi
 
         $this->curl = curl_init();
         /* @todo: Сделать необходимость проверки сертификата принимаемым параметром */
-        /*curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);*/
+        /* curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0); */
         curl_setopt($this->curl, CURLOPT_USERAGENT, 'Mobizon-PHP/1.0.0');
-        curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
+        /* @todo: не работает на шаред хостингах, так как включен open_basedir или safe_mode */
+        /* curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true); */
         curl_setopt($this->curl, CURLOPT_HEADER, false);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
