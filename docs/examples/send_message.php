@@ -14,8 +14,8 @@ $alphaname = 'Mobizon';
 if ($api->call('message',
     'sendSMSMessage',
     array(
-        'recipient' => '380954606086',
-        'text'      => 'Тестирование API',
+        'recipient' => '79991234567',
+        'text'      => 'Тест',
         'from'      => $alphaname,
     ))
 ) {
