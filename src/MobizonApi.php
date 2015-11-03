@@ -166,6 +166,10 @@ class MobizonApi
         array $queryParams = array(),
         $returnData = false
     ) {
+        $this->code = -1;
+        $this->data = array();
+        $this->message = '';
+
         if (empty($provider)) {
             throw new Mobizon_Param_Required('You must provide "provider" parameter to MobizonApi::call');
         }
@@ -181,7 +185,7 @@ class MobizonApi
         );
 
         $queryParams = $this->applyParams($queryDefaults, $queryParams);
-        $url = $this->apiUrl . '/' . strtolower($provider) . '/' . strtolower($method) . '?';
+        $url = rtrim($this->apiUrl, '/') . '/' . strtolower($provider) . '/' . strtolower($method) . '?';
         curl_setopt($this->curl, CURLOPT_URL, $url . http_build_query($queryParams));
         if (!empty($postParams)) {
             curl_setopt($this->curl, CURLOPT_POST, true);
