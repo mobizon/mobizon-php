@@ -35,6 +35,7 @@
 * [Получение состояния баланса](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/balance.php)
 * [Отправка SMS сообщения](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_message.php)
 * [Получение списка доступных для использования подписей (альфаимен)](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/alphanames.php)
+* [Отправка массовой SMS рассылки](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_mass_sms_campaign.php)
 
 ---
 
@@ -71,3 +72,4 @@ If you have own examples of integration, please help us improve our code base - 
 * [Get balance amount](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/balance.php)
 * [Send SMS message](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_message.php)
 * [Get your alphanames list](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/alphanames.php)
+* [Send massive SMS campaign](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_mass_sms_campaign.php)
