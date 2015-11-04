@@ -11,7 +11,7 @@ try
 {
     $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');
 
-    $alphaname = 'Mobizon';
+    $alphaname = 'TEST';
     $smsText = 'Test SMS message text!';
 
     echo 'Create massive campaign...' . PHP_EOL;
@@ -46,13 +46,12 @@ try
     // as it will make your account blocked for such activity with sms campaigns!
     // USE ONLY REAL NUMBERS FROM YOUR STORAGE - database, file, service, api, etc
     $counter = 0;
-    $total = 5000;
+    $total = 2000;
     $start = 77010000000;
     // max count of recipients per request is 500,
     // you should select by 500 numbers from your storage, not all in single request
     // we do 5000 numbers upload in this example, JUST FOR TEST!!!
     // we generate numbers just FOR TEST, DO NOT DO THIS IN REAL SOFTWARE!!!
-    $firstCall = true;
     while ($counter < $total)
     {
         $recipientsList = array();
@@ -66,10 +65,7 @@ try
             'addrecipients',
             array(
                 'id'         => $campaignId,
-                'recipients' => $recipientsList,
-                // actually this could be 0 every new request,
-                // but to make sure we call with 1 first time (clears previously added recipients if any)
-                'replace'    => $firstCall ? '1' : '0'
+                'recipients' => $recipientsList
             ))
         )
         {
@@ -90,7 +86,6 @@ try
             var_dump($api->getData());
             die(__LINE__);
         }
-        $firstCall = false;
     }
 
     //send campaign

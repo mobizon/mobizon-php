@@ -10,12 +10,12 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATO
 $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');
 
 echo 'Send message...' . PHP_EOL;
-$alphaname = 'Mobizon';
+$alphaname = 'TEST';
 if ($api->call('message',
     'sendSMSMessage',
     array(
-        'recipient' => '79991234567',
-        'text'      => 'Тест',
+        'recipient' => '77770000000',
+        'text'      => 'Test sms message',
         'from'      => $alphaname,
     ))
 ) {
