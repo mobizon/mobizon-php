@@ -12,7 +12,7 @@ class MobizonApi
     /**
      * @var string URL доступа к API
      */
-    protected $apiUrl = 'https://mobizon.kz/service/';
+    protected $apiUrl = 'https://api.mobizon.com/service/';
 
     /**
      * @var string Версия API
