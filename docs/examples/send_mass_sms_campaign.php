@@ -19,7 +19,7 @@ try
         array(
             'data' => array(
                 'text'    => $smsText,
-                'from'    => $alphaname,
+                'from'    => $alphaname, //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
                 'msgType' => 'SMS'
             )
         )

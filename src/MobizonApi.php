@@ -2,20 +2,37 @@
 
 namespace Mobizon;
 
+/**
+ * Class MobizonApi
+ * @package Mobizon
+ */
 class MobizonApi
 {
     /**
-     * @var string Ключ API
+     * @var string API key - copy it from your Mobizon account
      */
     protected $apiKey;
 
     /**
-     * @var string URL доступа к API
+     * @var string HTTP(S) API server address
      */
-    protected $apiUrl = 'https://api.mobizon.com/service/';
+    protected $apiServer = 'api.mobizon.com';
 
     /**
-     * @var string Версия API
+     * @var bool Force use HTTP connection instead of HTTPS. Not recommended, but if your system does not support secure connections,
+     * then you don't have any other choice.
+     */
+    protected $forceHTTP = false;
+
+    /**
+     * @var bool Set true to force client bypass SSL certificate checks. Changing this option is not recommended,
+     * but you could use it in case, if some temporary problems with sertificate transmission takes place.
+     * If forceHTTP is true, then this option will be ignored
+     */
+    protected $skipVerifySSL = false;
+
+    /**
+     * @var string API version - don't change it if you are not sure
      */
     protected $apiVersion = 'v1';
 
@@ -25,7 +42,7 @@ class MobizonApi
     protected $timeout = 30;
 
     /**
-     * @var string Формат ответа API
+     * @var string Формат ответа API - возможные форматы см. в allowedFormats
      */
     protected $format = 'json';
 
@@ -56,12 +73,14 @@ class MobizonApi
 
     /**
      * @param string $apiKey Ключ API
-     * @param array  $params Параметры API
+     * @param array  $params Параметры API (все параметры не обязательные и установлены в значение по умолчанию
      * <dl>
-     *   <dt>(string) format</dt><dd>Формат ответа API</dd>
-     *   <dt>(int) timeout</dt><dd>Время ожидания ответа API в секундах</dd>
-     *   <dt>(string) apiVersion</dt><dd>Версия API</dd>
-     *   <dt>(string) apiUrl</dt><dd>Адрес API</dd>
+     *   <dt>(string) format</dt><dd>Формат ответа API, по умолчанию - json</dd>
+     *   <dt>(int) timeout</dt><dd>Время ожидания ответа API в секундах, по умолчанию - 30 сек</dd>
+     *   <dt>(string) apiVersion</dt><dd>Версия API, по умолчанию - v1</dd>
+     *   <dt>(string) apiServer</dt><dd>Сервер API, по умолчанию - api.mobizon.com</dd>
+     *   <dt>(string) skipVerifySSL</dt><dd>Не проверять SSL сертификат, по умолчанию - false, проверять</dd>
+     *   <dt>(string) forceHTTP</dt><dd>Принудительно использовать обычное HTTP соединение, по умолчанию - false</dd>
      * </dl>
      * @throws Mobizon_ApiKey_Required
      * @throws Mobizon_Curl_Required
@@ -70,10 +89,6 @@ class MobizonApi
      */
     public function __construct($apiKey, array $params = array())
     {
-        if (!in_array('openssl', get_loaded_extensions())) {
-            throw new Mobizon_OpenSSL_Required('The OpenSSL extension is required but not currently enabled');
-        }
-
         if (empty($apiKey)) {
             throw new Mobizon_ApiKey_Required('You must provide API key');
         }
@@ -87,13 +102,17 @@ class MobizonApi
             $this->__set($key, $value);
         }
 
+        if (!$this->forceHTTP && !in_array('openssl', get_loaded_extensions())) {
+            throw new Mobizon_OpenSSL_Required('The OpenSSL extension is required but not currently enabled. Install OpenSSL or set forceHTTP=true in params to switch to insecure connection.');
+        }
+
         $this->curl = curl_init();
-        /* @todo: Сделать необходимость проверки сертификата принимаемым параметром */
-        /* curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0); */
+        if (!$this->forceHTTP && $this->skipVerifySSL)
+        {
+            curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($this->curl, CURLOPT_USERAGENT, 'Mobizon-PHP/1.0.0');
-        /* @todo: не работает на шаред хостингах, так как включен open_basedir или safe_mode */
-        /* curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true); */
         curl_setopt($this->curl, CURLOPT_HEADER, false);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
@@ -104,7 +123,7 @@ class MobizonApi
     /**
      * Установка параметров
      * @param string $key Параметр
-     * @param mixed  $value Хначение параметра
+     * @param mixed  $value Значение параметра
      * @throws Mobizon_Error
      */
     public function __set($key, $value)
@@ -128,17 +147,22 @@ class MobizonApi
                     throw new Mobizon_Error('Incorrect api version: ' . $value);
                 }
                 break;
-            case 'apiUrl':
-                if (!in_array(parse_url($value, PHP_URL_SCHEME), array('http', 'https'))) {
-                    throw new Mobizon_Error('Incorrect api url: ' . $value);
+            case 'apiServer':
+                if (!preg_match('/^[a-z0-9][-a-z0-9]+(?:\.[a-z0-9][-a-z0-9]*)+$/i', $value)) {
+                    throw new Mobizon_Error('Incorrect api server: ' . $value);
                 }
-                $value = rtrim($value, '/');
                 break;
             case 'code':
                 $value = (int)$value;
                 if ($value < 0 || $value > 999) {
                     throw new Mobizon_Error('Result code can not be handled: ' . $value);
                 }
+                break;
+            case 'skipVerifySSL':
+                $value = (bool)$value;
+                break;
+            case 'forceHTTP':
+                $value = (bool)$value;
                 break;
             default:
                 throw new Mobizon_Error('Incorrect class param or you can not set protected param: ' . $key);
@@ -185,7 +209,7 @@ class MobizonApi
         );
 
         $queryParams = $this->applyParams($queryDefaults, $queryParams);
-        $url = rtrim($this->apiUrl, '/') . '/' . strtolower($provider) . '/' . strtolower($method) . '?';
+        $url = ($this->forceHTTP ? 'http' : 'https') . '://' . $this->apiServer . '/service/' . strtolower($provider) . '/' . strtolower($method) . '?';
         curl_setopt($this->curl, CURLOPT_URL, $url . http_build_query($queryParams));
         if (!empty($postParams)) {
             curl_setopt($this->curl, CURLOPT_POST, true);
