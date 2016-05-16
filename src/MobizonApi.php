@@ -89,20 +89,24 @@ class MobizonApi
      */
     public function __construct($apiKey, array $params = array())
     {
-        if (empty($apiKey)) {
+        if (empty($apiKey))
+        {
             throw new Mobizon_ApiKey_Required('You must provide API key');
         }
 
-        if (!function_exists('curl_init')) {
+        if (!function_exists('curl_init'))
+        {
             throw new Mobizon_Curl_Required('The curl extension is required but not currently enabled');
         }
 
         $this->apiKey = $apiKey;
-        foreach ($params as $key => $value) {
+        foreach ($params as $key => $value)
+        {
             $this->__set($key, $value);
         }
 
-        if (!$this->forceHTTP && !in_array('openssl', get_loaded_extensions())) {
+        if (!$this->forceHTTP && !in_array('openssl', get_loaded_extensions()))
+        {
             throw new Mobizon_OpenSSL_Required('The OpenSSL extension is required but not currently enabled. Install OpenSSL or set forceHTTP=true in params to switch to insecure connection.');
         }
 
@@ -128,33 +132,39 @@ class MobizonApi
      */
     public function __set($key, $value)
     {
-        switch ($key) {
+        switch ($key)
+        {
             case 'format':
                 $value = strtolower($value);
-                if (!in_array($value, $this->allowedFormats)) {
+                if (!in_array($value, $this->allowedFormats))
+                {
                     throw new Mobizon_Error('Format should be one of the following: ' . implode(', ',
                             $this->allowedFormats) . '; ' . $value . ' provided');
                 }
                 break;
             case 'timeout':
                 $value = (int)$value;
-                if ($value < 0) {
+                if ($value < 0)
+                {
                     throw new Mobizon_Error('Timeout can not be less than 0, ' . $value . ' provided');
                 }
                 break;
             case 'apiVersion':
-                if (substr($value, 0, 1) !== 'v' || (int)substr($value, 1) < 1) {
+                if (substr($value, 0, 1) !== 'v' || (int)substr($value, 1) < 1)
+                {
                     throw new Mobizon_Error('Incorrect api version: ' . $value);
                 }
                 break;
             case 'apiServer':
-                if (!preg_match('/^[a-z0-9][-a-z0-9]+(?:\.[a-z0-9][-a-z0-9]*)+$/i', $value)) {
+                if (!preg_match('/^[a-z0-9][-a-z0-9]+(?:\.[a-z0-9][-a-z0-9]*)+$/i', $value))
+                {
                     throw new Mobizon_Error('Incorrect api server: ' . $value);
                 }
                 break;
             case 'code':
                 $value = (int)$value;
-                if ($value < 0 || $value > 999) {
+                if ($value < 0 || $value > 999)
+                {
                     throw new Mobizon_Error('Result code can not be handled: ' . $value);
                 }
                 break;
@@ -189,16 +199,19 @@ class MobizonApi
         array $postParams = array(),
         array $queryParams = array(),
         $returnData = false
-    ) {
+    )
+    {
         $this->code = -1;
         $this->data = array();
         $this->message = '';
 
-        if (empty($provider)) {
+        if (empty($provider))
+        {
             throw new Mobizon_Param_Required('You must provide "provider" parameter to MobizonApi::call');
         }
 
-        if (empty($method)) {
+        if (empty($method))
+        {
             throw new Mobizon_Param_Required('You must provide "method" parameter to MobizonApi::call');
         }
 
@@ -211,16 +224,20 @@ class MobizonApi
         $queryParams = $this->applyParams($queryDefaults, $queryParams);
         $url = ($this->forceHTTP ? 'http' : 'https') . '://' . $this->apiServer . '/service/' . strtolower($provider) . '/' . strtolower($method) . '?';
         curl_setopt($this->curl, CURLOPT_URL, $url . http_build_query($queryParams));
-        if (!empty($postParams)) {
+        if (!empty($postParams))
+        {
             curl_setopt($this->curl, CURLOPT_POST, true);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, http_build_query($postParams));
-        } else {
+        }
+        else
+        {
             curl_setopt($this->curl, CURLOPT_POST, false);
         }
 
         $result = curl_exec($this->curl);
         $error = curl_error($this->curl);
-        if ($error) {
+        if ($error)
+        {
             throw new Mobizon_Http_Error('API call failed: ' . $error);
         }
 
@@ -270,19 +287,27 @@ class MobizonApi
      */
     public function getData($subParam = null)
     {
-        if (!empty($subParam)) {
-            if (!is_object($this->data)) {
+        if (!empty($subParam))
+        {
+            if (!is_object($this->data))
+            {
                 return false;
             }
 
             $subQuery = explode('.', $subParam);
             $data = $this->data;
-            foreach ($subQuery as $subKey) {
-                if (is_object($data) && property_exists($data, $subKey)) {
+            foreach ($subQuery as $subKey)
+            {
+                if (is_object($data) && property_exists($data, $subKey))
+                {
                     $data = $data->{$subKey};
-                } elseif (is_array($data) && array_key_exists($subKey, $data)) {
+                }
+                elseif (is_array($data) && array_key_exists($subKey, $data))
+                {
                     $data = $data[$subKey];
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
@@ -321,7 +346,8 @@ class MobizonApi
      */
     public function decode($responseData)
     {
-        switch ($this->format) {
+        switch ($this->format)
+        {
             case 'json':
                 $result = $this->jsonDecode($responseData);
                 break;
@@ -357,7 +383,8 @@ class MobizonApi
     protected function xmlDecode($string)
     {
         $xml = simplexml_load_string($string);
-        if (!$xml) {
+        if (!$xml)
+        {
             throw new Mobizon_XML_Error('Incorrect XML response');
         }
 
