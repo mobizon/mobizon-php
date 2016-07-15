@@ -1,7 +1,7 @@
 {
     "name": "mobizon/mobizon-php",
     "type": "library",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A PHP library for communicating with the Mobizon API. Mobizon is a powerful SMS gateway and online marketing tools.",
     "keywords": [
         "mobizon",
