@@ -24,8 +24,6 @@
 их входных параметров, формата возвращаемых данных, списка возможных 
 [кодов ответа API](http://docs.mobizon.com/api/class-codes.ApiCodes.html) доступна по адресу [http://docs.mobizon.com/api/](http://docs.mobizon.com/api/).
 
-Руководство пользователя API в формате PDF можно скачать [здесь](http://docs.mobizon.com/mobizon-api-guide.pdf)
-
 # Примеры реализации типичных сценариев
 
 В разделе [docs/examples](https://github.com/mobizon/mobizon-php/tree/master/docs/examples) мы начали собирать для Вас
@@ -62,8 +60,6 @@ Details of connection your software to API is described at  [Mobizon website](ht
 
 You could review online documentation for detailed description of all currently available [API methods](http://docs.mobizon.com/api/), 
 input parameters, result formats, [API result codes](http://docs.mobizon.com/api/class-codes.ApiCodes.html) at [http://docs.mobizon.com/api/](http://docs.mobizon.com/api/).
-
-API quick start guide in PDF [Russian] is available [here](http://docs.mobizon.com/mobizon-api-guide.pdf)
 
 # Typical scenarios code
 
