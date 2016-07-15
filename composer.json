@@ -19,7 +19,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/mobizon/mobizon-php/issues"
+        "issues": "https://mobizon.com/contacts"
     },
     "require": {
         "php": ">=5.3.3",
