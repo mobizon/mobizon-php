@@ -1,3 +1,6 @@
+[![Latest Stable Version](https://poser.pugx.org/mobizon/mobizon-php/v/stable)](https://packagist.org/packages/mobizon/mobizon-php)
+[![Total Downloads](https://poser.pugx.org/mobizon/mobizon-php/downloads)](https://packagist.org/packages/mobizon/mobizon-php)
+
 [Русский](#Библиотека-для-работы-с-АПИ-mobizon) | [English](#php-library-for-communicating-with-mobizon-sms-http-api)
 
 # Библиотека для работы с АПИ Mobizon
