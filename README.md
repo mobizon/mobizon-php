@@ -11,7 +11,7 @@
 
 Для начала работы с API Вам необходимо сделать три простых шага:
 
-1. [Зарегистрироваться](https://mobizon.kz/registration) в системе [Mobizon](https://mobizon.kz/)
+1. [Зарегистрироваться](https://mobizon.com/registrationcountries) в системе [Mobizon](https://mobizon.com/)
 2. [Включить](https://mobizon.kz/bulk-sms/gateway/api#1) в своем аккаунте доступ к API
 3. Получить ключ API - после включения доступа к API Вам будет сгенерирован и показан ключ доступа.
 
@@ -49,7 +49,7 @@ Minimal required PHP version - 5.3.3
 
 To start sending SMS messages through Mobizon API you should do three simple steps:
 
-1. [Register account](https://mobizon.kz/registration) on [Mobizon](https://mobizon.kz/) website
+1. [Register account](https://mobizon.com/registrationcountries) at [Mobizon](https://mobizon.com/) website
 2. [Enable API](https://mobizon.kz/bulk-sms/gateway/api#1) in your Mobizon account settings
 3. Copy API key - when you enable API access in your account, system provides you with API key, which you use then in your software.
 
