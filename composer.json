@@ -1,24 +1,28 @@
 {
     "name": "mobizon/mobizon-php",
     "type": "library",
-    "version": "1.0.1",
     "description": "A PHP library for communicating with the Mobizon API. Mobizon is a powerful SMS gateway and online marketing tools.",
     "keywords": [
         "mobizon",
         "sms",
-        "api"
+        "api",
+        "gateway",
+        "messaging",
+        "A2P"
     ],
-    "homepage": "https://github.com/mobizon/mobizon-php",
+    "homepage": "https://mobizon.com/",
     "license": "MIT",
     "authors": [
         {
             "name": "Ivan Shcherbak",
-            "email": "cubezero@mobizon.com",
-            "homepage": "https://mobizon.com",
-            "role": "Developer"
+            "email": "Ivan.Shcherbak@mobizon.com",
+            "homepage": "https://mobizon.com/",
+            "role": "Lead Developer"
         }
     ],
     "support": {
+        "email": "support@mobizon.com",
+        "docs": "https://github.com/mobizon/mobizon-php/blob/master/README.md",
         "issues": "https://mobizon.com/contacts"
     },
     "require": {
