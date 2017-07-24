@@ -3,7 +3,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');
 
-echo 'Get the user SMS messages for the period' . PHP_EOL;
+echo 'Get the user SMS campaigns list for the period.' . PHP_EOL;
 
 //Sets++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -15,14 +15,14 @@ $dateEnd = date('Y-m-d');
 $saveDir = '.' . DIRECTORY_SEPARATOR;
 
 //File name to save CSV data
-$saveFileName = 'messages_report_' . $dateBegin . '_' . $dateEnd . '.csv';
+$saveFileName = 'campaigns_report_' . $dateBegin . '_' . $dateEnd . '.csv';
 
 //Sort data type
 $fieldSort = 'id';
 $typeSort = 'asc';
 
 //Provider
-$provider = 'message';
+$provider = 'campaign';
 
 //Method
 $method = 'list';
@@ -35,12 +35,13 @@ $totalItemCountElement = 'totalItemCount';
 //Sets++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //Create (or replace) file with header in first line - be careful, if you have file with such name, it will be overwritten
-$headerString = 'Message ID;Campaign ID;Date Sending Started;Date Status Updated;Message Status;Segments;Segment Price;Message Price;Alphaname;Phone Number;Message Text';
+$headerString = 'Campaign ID;Date Created;Date Sending Started;Date Sending Finished;Campaign Status;Messages;Segments;Total Price;Segments Delivered;From;Message Text';
 file_put_contents($saveDir . $saveFileName, $headerString);
 
 $page = 1;
 $pageSize = 100;
 $total = null;
+
 //cycle through pages to extract all results, not only the first page
 do {
     if ($total !== null && $pageSize * $page >= $total) {
@@ -50,8 +51,8 @@ do {
         $provider,
         $method,
         array(
-            'criteria[campaignCreateDateFrom]' => $dateBegin,
-            'criteria[campaignCreateDateTo]' => $dateEnd,
+            'criteria[createDateFrom]' => $dateBegin,
+            'criteria[createDateTo]' => $dateEnd,
             "sort[{$fieldSort}]" => $typeSort,
             'pagination[pageSize]' => $pageSize,
             'pagination[currentPage]' => $page
@@ -61,30 +62,26 @@ do {
             $total = (int)$api->getData($totalItemCountElement);
             $campaignsData = $api->getData($dataElement);
 
-            echo 'Total of ' . $total . ' items found. Current subset of data from ' . ($page - 1) * $pageSize . ' to ' . min($total - 1,
-                    ($page * $pageSize - 1)) . ':' . PHP_EOL;
-
-            $messagesData = $api->getData($dataElement);
-            foreach ($messagesData as $messageRow) {
-                $formattedRow = $messageRow->id
-                . ";" . $messageRow->campaignId
-                . ";" . $messageRow->startSendTs
-                . ";" . $messageRow->statusUpdateTs
-                . ";" . $messageRow->status
-                . ";" . $messageRow->segNum
-                . ";" . $messageRow->segUserBuy
-                . ";" . $messageRow->segNum * $messageRow->segUserBuy
-                . ";" . $messageRow->from
-                    . ";+" . $messageRow->to
-                    . ";" . '"' . str_replace("\n", '', $messageRow->text) . '"';
+            echo 'Total of ' . $api->getData($totalItemCountElement) . ' campaigns found.' . PHP_EOL;
+            foreach ($campaignsData as $campaignRow) {
+                $formattedRow = $campaignRow->id
+                    . ";" . $campaignRow->createTs
+                    . ";" . (empty($campaignRow->startSendTs) ? '-' : $campaignRow->startSendTs)
+                    . ";" . (empty($campaignRow->endSendTs) ? '-' : $campaignRow->endSendTs)
+                    . ";" . $campaignRow->commonStatus
+                    . ";" . $campaignRow->counters->totalMsgNum
+                    . ";" . $campaignRow->counters->totalMsgNum
+                    . ";" . $campaignRow->counters->totalCost
+                    . ";" . $campaignRow->counters->totalDelivrdSegNum
+                    . ";" . $campaignRow->from
+                    . ";" . '"' . str_replace("\n", '', $campaignRow->text) . '"';
                 file_put_contents($saveDir . $saveFileName, PHP_EOL . $formattedRow, FILE_APPEND);
             }
-            $page++;
         } else {
-            echo 'No messages found. Exit loop.' . PHP_EOL;
-            break;
+            echo 'No compaigns found.' . PHP_EOL;
         }
     } else {
-        echo 'Error occurred while fetching sms messages list: [' . $api->getCode() . '] ' . $api->getMessage() . PHP_EOL;
+        echo 'Error occurred while fetching sms campaigns list: [' . $api->getCode() . '] ' . $api->getMessage() . PHP_EOL;
     }
+
 } while (1);
