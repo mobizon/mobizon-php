@@ -44,7 +44,7 @@ $total = null;
 
 //cycle through pages to extract all results, not only the first page
 do {
-    if ($total !== null && $pageSize * $page >= $total) {
+    if ($total !== null && $pageSize * ($page-1) >= $total) {
         break;
     }
     if ($api->call(
