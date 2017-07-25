@@ -38,12 +38,12 @@ $totalItemCountElement = 'totalItemCount';
 $headerString = 'Message ID;Campaign ID;Date Sending Started;Date Status Updated;Message Status;Segments;Segment Price;Message Price;Alphaname;Phone Number;Message Text';
 file_put_contents($saveDir . $saveFileName, $headerString);
 
-$page = 1;
+$page = 0;
 $pageSize = 100;
 $total = null;
 //cycle through pages to extract all results, not only the first page
 do {
-    if ($total !== null && $pageSize * ($page-1) >= $total) {
+    if ($total !== null && $pageSize * $page >= $total) {
         break;
     }
     if ($api->call(
@@ -61,7 +61,7 @@ do {
             $total = (int)$api->getData($totalItemCountElement);
             $campaignsData = $api->getData($dataElement);
 
-            echo 'Total of ' . $total . ' items found. Current subset of data from ' . ($page - 1) * $pageSize . ' to ' . min($total - 1,
+            echo 'Total of ' . $total . ' items found. Current subset of data from ' . $page * $pageSize . ' to ' . min($total - 1,
                     ($page * $pageSize - 1)) . ':' . PHP_EOL;
 
             $messagesData = $api->getData($dataElement);

@@ -38,13 +38,13 @@ $totalItemCountElement = 'totalItemCount';
 $headerString = 'Campaign ID;Date Created;Date Sending Started;Date Sending Finished;Campaign Status;Messages;Segments;Total Price;Segments Delivered;From;Message Text';
 file_put_contents($saveDir . $saveFileName, $headerString);
 
-$page = 1;
+$page = 0;
 $pageSize = 100;
 $total = null;
 
 //cycle through pages to extract all results, not only the first page
 do {
-    if ($total !== null && $pageSize * ($page-1) >= $total) {
+    if ($total !== null && $pageSize * $page >= $total) {
         break;
     }
     if ($api->call(
