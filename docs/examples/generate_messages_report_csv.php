@@ -1,4 +1,10 @@
 <?php
+/**
+ * This example illustrates how to get SMS messages report using Mobizon API and create CSV file from data received.
+ *
+ * API setup: https://help.mobizon.com/help/sms-api/sms-api
+ * API documentation: http://docs.mobizon.com/api/
+ */
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');

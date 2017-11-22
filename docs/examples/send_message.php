@@ -1,8 +1,9 @@
 <?php
 /**
- * @author teslitsky
- * @date 11.02.2015
- * @time 4:42 PM
+ * This example illustrates how to send single SMS message using Mobizon API.
+ *
+ * API setup: https://help.mobizon.com/help/sms-api/sms-api
+ * API documentation: http://docs.mobizon.com/api/
  */
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
