@@ -65,27 +65,41 @@ try
         if (!$api->call('campaign',
             'addrecipients',
             array(
-                'id'         => $campaignId,
-                'recipients' => $recipientsList
-            ))
+                    'id'         => $campaignId,
+                    'recipients' => $recipientsList
+            )) && (!in_array($api->getCode(), array(0, 98, 99)) || !$api->hasData())
         )
         {
             echo 'An error occurred while adding recipients: [' . $api->getCode() . '] ' . $api->getMessage() . ' See details below:' . PHP_EOL;
             var_dump(array($api->getCode(), $api->getData(), $api->getMessage()));
             die(__LINE__);
         }
-
-        if (0 == $api->getCode() && $api->hasData())
-        {
-            echo 'Recipients portion added successfully.' . PHP_EOL;
-//            echo 'Code: ' . print_r($api->getCode(), true) . PHP_EOL;
-//            echo 'Data: ' . print_r($api->getData(), true) . PHP_EOL;
-        }
         else
         {
-            echo 'An error occurred while adding recipients: [' . $api->getCode() . '] ' . $api->getMessage() . ' See details below:' . PHP_EOL;
-            var_dump($api->getData());
-            die(__LINE__);
+            switch($api->getCode()){
+                case 0;
+                    echo 'Recipients portion added successfully.' . PHP_EOL;
+                    break;
+                case 98;
+                    echo 'Recipients portion partially added.' . PHP_EOL;
+                    break;
+                case 99;
+                    echo 'Recipients portion was not added.' . PHP_EOL;
+                    break;
+
+            }
+
+            foreach ($api->getData() as $item)
+            {
+                if ($item->code == 0)
+                {
+                    echo '+' . $item->recipient . ': recipient added with messageId=' . $item->messageId . PHP_EOL;
+                }
+                else
+                {
+                    echo '+' . $item->recipient . ': recipient rejected with error code=' . $item->code . PHP_EOL;
+                }
+            }
         }
     }
 
