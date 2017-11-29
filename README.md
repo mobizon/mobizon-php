@@ -13,7 +13,7 @@
 
 1. [Зарегистрироваться](https://mobizon.com/registrationcountries) в сервисе [Mobizon](https://mobizon.com/)
 2. [Включить](https://help.mobizon.com/help/sms-api/sms-api#how-to-set-up-api) в своем аккаунте доступ к API и получить ключ API.
-3. Настройте ваше ПО для отправки СМС или других необходимых Вашему бизнесу действий. См. [примеры](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
+3. Настроить ваше ПО для отправки СМС или других необходимых Вашему бизнесу действий. См. [документацию API](http://docs.mobizon.com/api/) и [примеры реализации](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
 
 Подробнее процесс подключения к API описан [на нашем сайте](https://help.mobizon.com/help/sms-api/sms-api)
 
