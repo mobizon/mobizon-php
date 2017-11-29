@@ -5,17 +5,17 @@
 
 # Библиотека для работы с АПИ Mobizon
 
-[PHP класс](https://github.com/mobizon/mobizon-php/blob/master/src/MobizonApi.php) для работы с API Mobizon - mobizon-php.
+[PHP класс](https://github.com/mobizon/mobizon-php/blob/master/src/MobizonApi.php) для работы с Mobizon API - mobizon-php.
 
 Минимальная версия PHP - 5.3.3
 
 Для начала работы с API Вам необходимо сделать три простых шага:
 
-1. [Зарегистрироваться](https://mobizon.com/registrationcountries) в системе [Mobizon](https://mobizon.com/)
-2. [Включить](https://mobizon.kz/bulk-sms/gateway/api#1) в своем аккаунте доступ к API
-3. Получить ключ API - после включения доступа к API Вам будет сгенерирован и показан ключ доступа.
+1. [Зарегистрироваться](https://mobizon.com/registrationcountries) в сервисе [Mobizon](https://mobizon.com/)
+2. [Включить](https://help.mobizon.com/help/sms-api/sms-api#how-to-set-up-api) в своем аккаунте доступ к API и получить ключ API.
+3. Настройте ваше ПО для отправки СМС или других необходимых Вашему бизнесу действий. См. [примеры](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
 
-Подробнее процесс подключения к API описан [на нашем сайте](https://mobizon.kz/bulk-sms/gateway/api)
+Подробнее процесс подключения к API описан [на нашем сайте](https://help.mobizon.com/help/sms-api/sms-api)
 
 # Composer
 
@@ -33,10 +33,10 @@
 готовые примеры реализации типичных сценариев работы с API на Вашем сайте. Если у Вас есть собственные рабочие
 варианты использования, будем рады разместить их в нашем репо.
 
-* [Получение состояния баланса](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/balance.php)
-* [Отправка SMS сообщения](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_message.php)
-* [Получение списка доступных для использования подписей (альфаимен)](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/alphanames.php)
+* [Отправка одного SMS сообщения](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_message.php)
 * [Отправка массовой SMS рассылки](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_mass_sms_campaign.php)
+* [Получение состояния баланса](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/balance.php)
+* [Получение списка доступных для использования подписей (альфаимен)](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/alphanames.php)
 * [Сохранение отчета о СМС сообщениях по заданным критериям поиска](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/generate_messages_report_csv.php)
 * [Сохранение сводного отчета о СМС кампаниях по заданным критериям поиска](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/generate_campaigns_report_csv.php)
 
@@ -44,17 +44,17 @@
 
 # PHP library for communicating with Mobizon SMS HTTP API
 
-[PHP class](https://github.com/mobizon/mobizon-php/blob/master/src/MobizonApi.php) for communication with SMS API Mobizon - mobizon-php.
+[PHP class](https://github.com/mobizon/mobizon-php/blob/master/src/MobizonApi.php) for interaction with Mobizon SMS API - mobizon-php.
 
 Minimal required PHP version - 5.3.3
 
 To start sending SMS messages through Mobizon API you should do three simple steps:
 
 1. [Register account](https://mobizon.com/registrationcountries) at [Mobizon](https://mobizon.com/) website
-2. [Enable API](https://mobizon.kz/bulk-sms/gateway/api#1) in your Mobizon account settings
-3. Copy API key - when you enable API access in your account, system provides you with API key, which you use then in your software.
+2. [Enable API](https://help.mobizon.com/help/sms-api/sms-api#how-to-set-up-api) in your Mobizon account settings and get API key provided
+3. Setup your software to send SMS thorough Mobizon or what ever you need to fulfil your company business requirements. See [examples](https://github.com/mobizon/mobizon-php/tree/master/docs/examples) for typical scenarios.
 
-Details of connection your software to API is described at  [Mobizon website](https://mobizon.kz/bulk-sms/gateway/api)
+How to integrate your software to our API is described at [Mobizon knowledge base website](https://help.mobizon.com/help/sms-api/sms-api)
 
 # Composer
 
@@ -68,7 +68,7 @@ input parameters, result formats, [API result codes](http://docs.mobizon.com/api
 # Typical scenarios code
 
 We have started development of typical usage scenarios in [docs/examples](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
-If you have own examples of integration, please help us improve our code base - just send us some code examples to support@mobizon.com and we will glad to put your code to our repo. 
+If you have own examples of integration, please help us in improving our code base - just send us some code examples to support@mobizon.com and we will glad to put your code to our repo. 
 
 * [Get balance amount](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/balance.php)
 * [Send SMS message](https://github.com/mobizon/mobizon-php/blob/master/docs/examples/send_message.php)
