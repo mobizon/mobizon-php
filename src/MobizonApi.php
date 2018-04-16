@@ -9,12 +9,27 @@ namespace Mobizon;
 class MobizonApi
 {
     /**
+     * @var array Allowed constructor params
+     */
+    private static $allowedConstructorParams = array(
+        'apiServer',
+        'apiKey',
+        'forceHTTP',
+        'skipVerifySSL',
+        'apiVersion',
+        'timeout',
+        'format'
+    );
+
+    /**
      * @var string API key - copy it from your Mobizon account
      */
     protected $apiKey;
 
     /**
-     * @var string HTTP(S) API server address
+     * @var string HTTP(S) API server address. api.mobizon.com is deprecated and will be disabled soon.
+     * @deprecated Default value will be removed soon. Only OLD keys will be accepted by this endpoint till it's final shutdown.
+     * Correct API domain depending on user site of registration and could be found in 'API connection setup guide'.
      */
     protected $apiServer = 'api.mobizon.com';
 
@@ -37,82 +52,97 @@ class MobizonApi
     protected $apiVersion = 'v1';
 
     /**
-     * @var string Время ожидания ответа API в секундах
+     * @var string API response timeout in seconds
      */
     protected $timeout = 30;
 
     /**
-     * @var string Формат ответа API - возможные форматы см. в allowedFormats
+     * @var string default API response format - possible formats see in allowedFormats
      */
     protected $format = 'json';
 
     /**
-     * @var array Возможные форматы ответа API
+     * @var array possible API response formats
      */
-    protected $allowedFormats = array('xml', 'json');
+    private static $allowedFormats = array('xml', 'json');
 
     /**
-     * @var resource
+     * @var resource CURL internal pointer
      */
     protected $curl;
 
     /**
-     * @var integer Код последней выполненной операции call
+     * @var integer Latest API call response code
      */
     protected $code = -1;
 
     /**
-     * @var mixed Данные, возвращенные последним запросом к API
+     * @var mixed Latest API call response data
      */
     protected $data = array();
 
     /**
-     * @var string Сообщение, полученное с последним ответом сервера
+     * @var string Latest API call response message
      */
     protected $message = '';
 
     /**
-     * @param string $apiKey Ключ API
-     * @param array  $params Параметры API (все параметры не обязательные и установлены в значение по умолчанию
-     * <dl>
-     *   <dt>(string) format</dt><dd>Формат ответа API, по умолчанию - json</dd>
-     *   <dt>(int) timeout</dt><dd>Время ожидания ответа API в секундах, по умолчанию - 30 сек</dd>
-     *   <dt>(string) apiVersion</dt><dd>Версия API, по умолчанию - v1</dd>
-     *   <dt>(string) apiServer</dt><dd>Сервер API, по умолчанию - api.mobizon.com</dd>
-     *   <dt>(string) skipVerifySSL</dt><dd>Не проверять SSL сертификат, по умолчанию - false, проверять</dd>
-     *   <dt>(string) forceHTTP</dt><dd>Принудительно использовать обычное HTTP соединение, по умолчанию - false</dd>
-     * </dl>
+     * @param string $apiKey User API key
+     * @param string $apiServer User API server depends on user initial registration site. Correct API domain could be found in 'API connection setup guide'
+     * @param array $params API parameters
+     *     (string)  format API responce format. Available formats: xml|json. Default: json.
+     *     (integer) timeout API response timeout in seconds. Default: 30.
+     *     (string)  apiVersion API version. Default: v1.
+     *     (string)  apiServer API server to send requests against. Mandatory parameter.
+     *     (string)  skipVerifySSL Flag to disable SSL verification procedure during handshake with API server. Default: false (verification should be passed). Omitting if forceHTTP=true
+     *     (string)  forceHTTP Flag to forcibly disable SSL connection. Default: false (means all API requests will be made over HTTPS).
      * @throws Mobizon_ApiKey_Required
      * @throws Mobizon_Curl_Required
      * @throws Mobizon_Error
      * @throws Mobizon_OpenSSL_Required
      */
-    public function __construct($apiKey, array $params = array())
+    public function __construct($params = array())
     {
-        if (empty($apiKey))
-        {
-            throw new Mobizon_ApiKey_Required('You must provide API key');
+        if (!function_exists('curl_init')) {
+            throw new Mobizon_Curl_Required('The curl extension is required but not currently enabled.');
+        }
+        $args = func_get_args();
+        $argc = func_num_args();
+        if ($argc > 1) {
+            if (is_scalar($args[0])) {
+                $this->apiKey = $args[0];
+            } else {
+                $params = $args[0];
+            }
+            if (is_scalar($args[1])) {
+                $this->apiServer = $args[1];
+            } else {
+                $params = $args[1];
+            }
+            if (is_array($args[2])) {
+                $params = $args[2];
+            }
         }
 
-        if (!function_exists('curl_init'))
-        {
-            throw new Mobizon_Curl_Required('The curl extension is required but not currently enabled');
-        }
-
-        $this->apiKey = $apiKey;
-        foreach ($params as $key => $value)
-        {
+        $params = array_intersect_key($params, array_fill_keys(static::$allowedConstructorParams, true));
+        foreach ($params as $key => $value) {
             $this->__set($key, $value);
         }
 
-        if (!$this->forceHTTP && !in_array('openssl', get_loaded_extensions()))
-        {
+        if (empty($this->apiKey)) {
+            throw new Mobizon_ApiKey_Required('You must provide API key in constructor params.');
+        }
+
+        if (empty($this->apiServer)) {
+            throw new Mobizon_Param_Required('You must provide API server host in constructor params.');
+        }
+
+        if (!$this->forceHTTP && !in_array('openssl', get_loaded_extensions())) {
             throw new Mobizon_OpenSSL_Required('The OpenSSL extension is required but not currently enabled. Install OpenSSL or set forceHTTP=true in params to switch to insecure connection.');
         }
 
         $this->curl = curl_init();
-        if (!$this->forceHTTP && $this->skipVerifySSL)
-        {
+        if (!$this->forceHTTP && $this->skipVerifySSL) {
             curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
         }
@@ -127,45 +157,39 @@ class MobizonApi
     /**
      * Установка параметров
      * @param string $key Параметр
-     * @param mixed  $value Значение параметра
+     * @param mixed $value Значение параметра
      * @throws Mobizon_Error
      */
     public function __set($key, $value)
     {
-        switch ($key)
-        {
+        switch ($key) {
             case 'format':
                 $value = strtolower($value);
-                if (!in_array($value, $this->allowedFormats))
-                {
+                if (!in_array($value, static::$allowedFormats)) {
                     throw new Mobizon_Error('Format should be one of the following: ' . implode(', ',
-                            $this->allowedFormats) . '; ' . $value . ' provided');
+                            static::$allowedFormats) . '; ' . $value . ' provided.');
                 }
                 break;
             case 'timeout':
                 $value = (int)$value;
-                if ($value < 0)
-                {
-                    throw new Mobizon_Error('Timeout can not be less than 0, ' . $value . ' provided');
+                if ($value < 0) {
+                    throw new Mobizon_Error('Timeout can not be less than 0, ' . $value . ' provided.');
                 }
                 break;
             case 'apiVersion':
-                if (substr($value, 0, 1) !== 'v' || (int)substr($value, 1) < 1)
-                {
-                    throw new Mobizon_Error('Incorrect api version: ' . $value);
+                if (substr($value, 0, 1) !== 'v' || (int)substr($value, 1) < 1) {
+                    throw new Mobizon_Error('Incorrect api version: ' . $value . '.');
                 }
                 break;
             case 'apiServer':
-                if (!preg_match('/^[a-z0-9][-a-z0-9]+(?:\.[a-z0-9][-a-z0-9]*)+$/i', $value))
-                {
-                    throw new Mobizon_Error('Incorrect api server: ' . $value);
+                if (!preg_match('/^[a-z0-9][-a-z0-9]+(?:\.[a-z0-9][-a-z0-9]*)+$/i', $value)) {
+                    throw new Mobizon_Error('Incorrect api server: ' . $value . '.');
                 }
                 break;
             case 'code':
                 $value = (int)$value;
-                if ($value < 0 || $value > 999)
-                {
-                    throw new Mobizon_Error('Result code can not be handled: ' . $value);
+                if ($value < 0 || $value > 999) {
+                    throw new Mobizon_Error('Result code can not be handled: ' . $value . '.');
                 }
                 break;
             case 'skipVerifySSL':
@@ -175,7 +199,7 @@ class MobizonApi
                 $value = (bool)$value;
                 break;
             default:
-                throw new Mobizon_Error('Incorrect class param or you can not set protected param: ' . $key);
+                throw new Mobizon_Error('Incorrect class param or you can not set protected param: ' . $key . '.');
                 break;
         }
 
@@ -186,9 +210,9 @@ class MobizonApi
      * Вызов методов API
      * @param string $provider Название провайдера
      * @param string $method Название метода
-     * @param array  $postParams Передаваемый в API массив параметров POST
-     * @param array  $queryParams Передаваемый в API массив GET параметров
-     * @param bool   $returnData Возвращать data вместо code
+     * @param array $postParams Передаваемый в API массив параметров POST
+     * @param array $queryParams Передаваемый в API массив GET параметров
+     * @param bool $returnData Возвращать data вместо code
      * @throws Mobizon_Http_Error
      * @throws Mobizon_Param_Required
      * @return mixed
@@ -199,24 +223,21 @@ class MobizonApi
         array $postParams = array(),
         array $queryParams = array(),
         $returnData = false
-    )
-    {
+    ) {
         $this->code = -1;
         $this->data = array();
         $this->message = '';
 
-        if (empty($provider))
-        {
-            throw new Mobizon_Param_Required('You must provide "provider" parameter to MobizonApi::call');
+        if (empty($provider)) {
+            throw new Mobizon_Param_Required('You must provide "provider" parameter to MobizonApi::call.');
         }
 
-        if (empty($method))
-        {
-            throw new Mobizon_Param_Required('You must provide "method" parameter to MobizonApi::call');
+        if (empty($method)) {
+            throw new Mobizon_Param_Required('You must provide "method" parameter to MobizonApi::call.');
         }
 
         $queryDefaults = array(
-            'api'    => $this->apiVersion,
+            'api' => $this->apiVersion,
             'apiKey' => $this->apiKey,
             'output' => $this->format
         );
@@ -224,21 +245,17 @@ class MobizonApi
         $queryParams = $this->applyParams($queryDefaults, $queryParams);
         $url = ($this->forceHTTP ? 'http' : 'https') . '://' . $this->apiServer . '/service/' . strtolower($provider) . '/' . strtolower($method) . '?';
         curl_setopt($this->curl, CURLOPT_URL, $url . http_build_query($queryParams));
-        if (!empty($postParams))
-        {
+        if (!empty($postParams)) {
             curl_setopt($this->curl, CURLOPT_POST, true);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, http_build_query($postParams));
-        }
-        else
-        {
+        } else {
             curl_setopt($this->curl, CURLOPT_POST, false);
         }
 
         $result = curl_exec($this->curl);
         $error = curl_error($this->curl);
-        if ($error)
-        {
-            throw new Mobizon_Http_Error('API call failed: ' . $error);
+        if ($error) {
+            throw new Mobizon_Http_Error('API call failed: ' . $error . '.');
         }
 
         $result = $this->decode($result);
@@ -256,7 +273,7 @@ class MobizonApi
     }
 
     /**
-     * Накладывает новые значения на дефолтные параметры настроек API
+     * Applies new params to default API params
      *
      * @param $defaults
      * @param $params
@@ -287,27 +304,19 @@ class MobizonApi
      */
     public function getData($subParam = null)
     {
-        if (!empty($subParam))
-        {
-            if (!is_object($this->data))
-            {
+        if (!empty($subParam)) {
+            if (!is_object($this->data)) {
                 return false;
             }
 
             $subQuery = explode('.', $subParam);
             $data = $this->data;
-            foreach ($subQuery as $subKey)
-            {
-                if (is_object($data) && property_exists($data, $subKey))
-                {
+            foreach ($subQuery as $subKey) {
+                if (is_object($data) && property_exists($data, $subKey)) {
                     $data = $data->{$subKey};
-                }
-                elseif (is_array($data) && array_key_exists($subKey, $data))
-                {
+                } elseif (is_array($data) && array_key_exists($subKey, $data)) {
                     $data = $data[$subKey];
-                }
-                else
-                {
+                } else {
                     return null;
                 }
             }
@@ -346,8 +355,7 @@ class MobizonApi
      */
     public function decode($responseData)
     {
-        switch ($this->format)
-        {
+        switch ($this->format) {
             case 'json':
                 $result = $this->jsonDecode($responseData);
                 break;
@@ -383,9 +391,8 @@ class MobizonApi
     protected function xmlDecode($string)
     {
         $xml = simplexml_load_string($string);
-        if (!$xml)
-        {
-            throw new Mobizon_XML_Error('Incorrect XML response');
+        if (!$xml) {
+            throw new Mobizon_XML_Error('Incorrect XML response.');
         }
 
         return $xml;
