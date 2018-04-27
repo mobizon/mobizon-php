@@ -8,9 +8,8 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 
-try
-{
-    $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK');
+try {
+    $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
 
     $alphaname = 'TEST';
     $smsText = 'Test SMS message text!';
@@ -19,25 +18,22 @@ try
     if (!$api->call('campaign', 'create',
         array(
             'data' => array(
-                'text'    => $smsText,
-                'from'    => $alphaname, //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
+                'text' => $smsText,
+                'from' => $alphaname,
+                //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
                 'msgType' => 'SMS'
             )
         )
     )
-    )
-    {
+    ) {
         echo 'Campaign not created, unhandled errors.' . PHP_EOL;
         die(__LINE__);
     }
 
-    if (0 == $api->getCode() && $api->hasData())
-    {
+    if (0 == $api->getCode() && $api->hasData()) {
         $campaignId = $api->getData();
         echo 'Campaign created with ID: ' . $campaignId . PHP_EOL;
-    }
-    else
-    {
+    } else {
         echo 'Campaign not created, errors: ' . print_r($api->getData(), true) . PHP_EOL;
         die(__LINE__);
     }
@@ -53,52 +49,43 @@ try
     // you should select by 500 numbers from your storage, not all in single request
     // we do 5000 numbers upload in this example, JUST FOR TEST!!!
     // we generate numbers just FOR TEST, DO NOT DO THIS IN REAL SOFTWARE!!!
-    while ($counter < $total)
-    {
+    while ($counter < $total) {
         $recipientsList = array();
-        for ($i = $start + $counter; $i < $start + $counter + min(500, $total - $counter); $i++)
-        {
+        for ($i = $start + $counter; $i < $start + $counter + min(500, $total - $counter); $i++) {
             $recipientsList[] = $i;
         }
         $counter += 500;
 
         if (!$api->call('campaign',
-            'addrecipients',
-            array(
-                    'id'         => $campaignId,
+                'addrecipients',
+                array(
+                    'id' => $campaignId,
                     'recipients' => $recipientsList
-            )) && (!in_array($api->getCode(), array(0, 98, 99)) || !$api->hasData())
-        )
-        {
+                )) && (!in_array($api->getCode(), array(0, 98, 99)) || !$api->hasData())
+        ) {
             echo 'An error occurred while adding recipients: [' . $api->getCode() . '] ' . $api->getMessage() . ' See details below:' . PHP_EOL;
             var_dump(array($api->getCode(), $api->getData(), $api->getMessage()));
             die(__LINE__);
         }
-        else
-        {
-            switch($api->getCode()){
-                case 0;
-                    echo 'Recipients portion added successfully.' . PHP_EOL;
-                    break;
-                case 98;
-                    echo 'Recipients portion partially added.' . PHP_EOL;
-                    break;
-                case 99;
-                    echo 'Recipients portion was not added.' . PHP_EOL;
-                    break;
 
-            }
+        switch ($api->getCode()) {
+            case 0;
+                echo 'Recipients portion added successfully.' . PHP_EOL;
+                break;
+            case 98;
+                echo 'Recipients portion partially added.' . PHP_EOL;
+                break;
+            case 99;
+                echo 'Recipients portion was not added.' . PHP_EOL;
+                break;
 
-            foreach ($api->getData() as $item)
-            {
-                if ($item->code == 0)
-                {
-                    echo '+' . $item->recipient . ': recipient added with messageId=' . $item->messageId . PHP_EOL;
-                }
-                else
-                {
-                    echo '+' . $item->recipient . ': recipient rejected with error code=' . $item->code . PHP_EOL;
-                }
+        }
+
+        foreach ($api->getData() as $item) {
+            if ($item->code == 0) {
+                echo '+' . $item->recipient . ': recipient added with messageId=' . $item->messageId . PHP_EOL;
+            } else {
+                echo '+' . $item->recipient . ': recipient rejected with error code=' . $item->code . PHP_EOL;
             }
         }
     }
@@ -110,16 +97,13 @@ try
         array(
             'id' => $campaignId
         ))
-    )
-    {
+    ) {
         echo 'An error occurred while confirming campaign send: [' . $api->getCode() . '] ' . $api->getMessage() . ' See details below:' . PHP_EOL;
         var_dump($api->getData());
         die(__LINE__);
     }
     echo 'Campaign #' . $campaignId . ' has been sent.' . PHP_EOL;
-}
-catch (\Exception $e)
-{
+} catch (\Exception $e) {
     echo 'An error occured in communication process: ' . $e->getMessage() . PHP_EOL;
     die(__LINE__);
 }
