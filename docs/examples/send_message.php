@@ -16,8 +16,9 @@ if ($api->call('message',
     'sendSMSMessage',
     array(
         'recipient' => '77770000000',
-        'text'      => 'Test sms message',
-        'from'      => $alphaname, //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
+        'text' => 'Test sms message',
+        'from' => $alphaname,
+        //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
     ))
 ) {
     $messageId = $api->getData('messageId');

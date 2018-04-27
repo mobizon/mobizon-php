@@ -4,6 +4,14 @@ namespace Mobizon;
 
 /**
  * Class MobizonApi
+ *
+ * @example Simplest example to use API library. More examples see in docs/examples directory
+ *
+ * $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
+ * if ($api->call('User', 'GetOwnBalance') && $api->hasData('balance')) {
+ *     echo 'Your balance: ' . $api->getData('currency') . $api->getData('balance');
+ * }
+ *
  * @package Mobizon
  */
 class MobizonApi
@@ -29,7 +37,7 @@ class MobizonApi
     /**
      * @var string HTTP(S) API server address. api.mobizon.com is deprecated and will be disabled soon.
      * @deprecated Default value will be removed soon. Only OLD keys will be accepted by this endpoint till it's final shutdown.
-     * Correct API domain depending on user site of registration and could be found in 'API connection setup guide'.
+     * API domain depends on user site of registration and could be found in 'API connection setup guide'.
      */
     protected $apiServer = 'api.mobizon.com';
 
@@ -87,6 +95,8 @@ class MobizonApi
     protected $message = '';
 
     /**
+     * Constructor of API class.
+     *
      * @param string $apiKey User API key
      * @param string $apiServer User API server depends on user initial registration site. Correct API domain could be found in 'API connection setup guide'
      * @param array $params API parameters
@@ -155,9 +165,10 @@ class MobizonApi
     }
 
     /**
-     * Установка параметров
-     * @param string $key Параметр
-     * @param mixed $value Значение параметра
+     * Setter.
+     *
+     * @param string $key Param name
+     * @param mixed $value Param value
      * @throws Mobizon_Error
      */
     public function __set($key, $value)
@@ -207,12 +218,13 @@ class MobizonApi
     }
 
     /**
-     * Вызов методов API
-     * @param string $provider Название провайдера
-     * @param string $method Название метода
-     * @param array $postParams Передаваемый в API массив параметров POST
-     * @param array $queryParams Передаваемый в API массив GET параметров
-     * @param bool $returnData Возвращать data вместо code
+     * Main method to call Mobizon API.
+     *
+     * @param string $provider API provider name
+     * @param string $method API method name
+     * @param array $postParams POST params array
+     * @param array $queryParams GET params array
+     * @param bool $returnData Flag to return received data as result of this function instead of code (default behavior)
      * @throws Mobizon_Http_Error
      * @throws Mobizon_Param_Required
      * @return mixed
@@ -273,7 +285,7 @@ class MobizonApi
     }
 
     /**
-     * Applies new params to default API params
+     * Applies new params to default API params.
      *
      * @param $defaults
      * @param $params
@@ -296,8 +308,9 @@ class MobizonApi
     }
 
     /**
-     * Возвращает все данные, полученные из API во время последнего запроса
-     * или определенную их часть, если такой элемент существует
+     * Returns data from last API responce or it's part if defuned in subParam string.
+     * If you need to get some sub-sub-item of data, use dot separated string, containing names of sub-items.
+     * Example: $api->getData('links.0.url') will return data->links->0->url item from response.
      *
      * @param string $subParam
      * @return mixed
@@ -328,9 +341,11 @@ class MobizonApi
     }
 
     /**
-     * Проверяет, есть ли такие данные в ответе
+     * Checks if such data exists in response.
      *
-     * Можно проверить как весь ответ на наличие данных, так и определенный элемент данных
+     * You could check whole response data has any data or just some sub-sub-item of data is present.
+     * Example: $api->hasData('links.0.url') will return true if data->links->0->url item is exists and false otherwise.
+     * Note that it does not check if returned result is empty, so empty item will be reported as true.
      *
      * @param bool $subParam
      * @return bool
@@ -341,7 +356,9 @@ class MobizonApi
     }
 
     /**
-     * @return string Сообщение, полученное с последним ответом сервера
+     * Returns message received in the last API response.
+     *
+     * @return string
      */
     public function getMessage()
     {
@@ -349,7 +366,8 @@ class MobizonApi
     }
 
     /**
-     * Возвращает декодированный ответ API в зависимости от формата обмена
+     * Returns parsed API response depending on requested format
+     *
      * @param mixed $responseData
      * @return mixed Декодированный ответ API
      */
@@ -373,7 +391,8 @@ class MobizonApi
     }
 
     /**
-     * Возвращает объект ответа API из JSON
+     * Parses json API response.
+     *
      * @param string $json
      * @return mixed
      */
@@ -383,7 +402,8 @@ class MobizonApi
     }
 
     /**
-     * Возвращает объект ответа API из XML
+     * Parses XML API response.
+     *
      * @param string $string
      * @return object
      * @throws Mobizon_XML_Error

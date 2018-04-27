@@ -73,14 +73,14 @@ do {
             $messagesData = $api->getData($dataElement);
             foreach ($messagesData as $messageRow) {
                 $formattedRow = $messageRow->id
-                . ";" . $messageRow->campaignId
-                . ";" . $messageRow->startSendTs
-                . ";" . $messageRow->statusUpdateTs
-                . ";" . $messageRow->status
-                . ";" . $messageRow->segNum
-                . ";" . $messageRow->segUserBuy
-                . ";" . $messageRow->segNum * $messageRow->segUserBuy
-                . ";" . $messageRow->from
+                    . ";" . $messageRow->campaignId
+                    . ";" . $messageRow->startSendTs
+                    . ";" . $messageRow->statusUpdateTs
+                    . ";" . $messageRow->status
+                    . ";" . $messageRow->segNum
+                    . ";" . $messageRow->segUserBuy
+                    . ";" . $messageRow->segNum * $messageRow->segUserBuy
+                    . ";" . $messageRow->from
                     . ";+" . $messageRow->to
                     . ";" . '"' . str_replace("\n", '', $messageRow->text) . '"';
                 file_put_contents($saveDir . $saveFileName, PHP_EOL . $formattedRow, FILE_APPEND);
