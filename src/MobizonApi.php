@@ -129,7 +129,7 @@ class MobizonApi
             } else {
                 $params = $args[1];
             }
-            if (is_array($args[2])) {
+            if (isset($args[2]) && is_array($args[2])) {
                 $params = $args[2];
             }
         }
@@ -249,7 +249,7 @@ class MobizonApi
         }
 
         $queryDefaults = array(
-            'api' => $this->apiVersion,
+            'api'    => $this->apiVersion,
             'apiKey' => $this->apiKey,
             'output' => $this->format
         );
