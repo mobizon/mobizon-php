@@ -7,7 +7,13 @@ namespace Mobizon;
  *
  * @example Simplest example to use API library. More examples see in docs/examples directory
  *
- * $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
+ * // init api either:
+ * $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz', array('format' => 'json'));
+ * // or
+ * $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', array('apiServer' => 'api.mobizon.kz', 'format' => 'json'));
+ * // or
+ * $api = new Mobizon\MobizonApi(array('apiKey' => 'KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'apiServer' => 'api.mobizon.kz', 'format' => 'json'));
+ * // then call API method and get result just like this:
  * if ($api->call('User', 'GetOwnBalance') && $api->hasData('balance')) {
  *     echo 'Your balance: ' . $api->getData('currency') . $api->getData('balance');
  * }
@@ -97,12 +103,13 @@ class MobizonApi
     /**
      * Constructor of API class.
      *
-     * @param string $apiKey User API key
+     * @param string $apiKey User API key. API key should be passed either as first string param or as apiKey in params.
      * @param string $apiServer User API server depends on user initial registration site. Correct API domain could be found in 'API connection setup guide'
      * @param array $params API parameters
      *     (string)  format API responce format. Available formats: xml|json. Default: json.
      *     (integer) timeout API response timeout in seconds. Default: 30.
      *     (string)  apiVersion API version. Default: v1.
+     *     (string)  apiKey API key.
      *     (string)  apiServer API server to send requests against. Mandatory parameter.
      *     (string)  skipVerifySSL Flag to disable SSL verification procedure during handshake with API server. Default: false (verification should be passed). Omitting if forceHTTP=true
      *     (string)  forceHTTP Flag to forcibly disable SSL connection. Default: false (means all API requests will be made over HTTPS).
@@ -119,15 +126,15 @@ class MobizonApi
         $args = func_get_args();
         $argc = func_num_args();
         if ($argc > 1) {
-            if (is_scalar($args[0])) {
+            if (is_string($args[0])) {
                 $this->apiKey = $args[0];
-            } else {
-                $params = $args[0];
             }
-            if (is_scalar($args[1])) {
-                $this->apiServer = $args[1];
-            } else {
-                $params = $args[1];
+            if (isset($args[1])) {
+                if (is_string($args[1])) {
+                    $this->apiServer = $args[1];
+                } elseif (is_array($args[1])) {
+                    $params = $args[1];
+                }
             }
             if (isset($args[2]) && is_array($args[2])) {
                 $params = $args[2];
@@ -190,6 +197,11 @@ class MobizonApi
             case 'apiVersion':
                 if (substr($value, 0, 1) !== 'v' || (int)substr($value, 1) < 1) {
                     throw new Mobizon_Error('Incorrect api version: ' . $value . '.');
+                }
+                break;
+            case 'apiKey':
+                if (!preg_match('/^[a-z0-9]{40}|[a-z0-9]{70}$/i', $value)) {
+                    throw new Mobizon_Error('Incorrect api key: ' . $value . '.');
                 }
                 break;
             case 'apiServer':
