@@ -125,7 +125,8 @@ class MobizonApi
         }
         $args = func_get_args();
         $argc = func_num_args();
-        if ($argc > 1) {
+
+        if (isset($args[0])) {
             if (is_string($args[0])) {
                 $this->apiKey = $args[0];
             }
@@ -136,9 +137,15 @@ class MobizonApi
                     $params = $args[1];
                 }
             }
-            if (isset($args[2]) && is_array($args[2])) {
-                $params = $args[2];
+            if (isset($args[2])) {
+                if (is_array($args[2])) {
+                    $params = $args[2];
+                } else {
+                    $params = array();
+                }
             }
+        } else {
+            $params = array();
         }
 
         $params = array_intersect_key($params, array_fill_keys(static::$allowedConstructorParams, true));
