@@ -8,7 +8,7 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 
-$api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
+$api = new Mobizon\MobizonApi(["apiKey" => 'KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', "apiServer" => 'api.mobizon.kz']);
 
 echo 'Send message...' . PHP_EOL;
 $alphaname = 'TEST';
