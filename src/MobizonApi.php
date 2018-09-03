@@ -291,6 +291,10 @@ class MobizonApi
 
         $result = $this->decode($result);
 
+        if (!is_object($result)) {
+            throw new Mobizon_Http_Error('Bad API result: server returned unexpected result.');
+        }
+
         $this->code = $result->code;
         $this->data = $result->data;
         $this->message = $result->message;
@@ -394,19 +398,12 @@ class MobizonApi
     {
         switch ($this->format) {
             case 'json':
-                $result = $this->jsonDecode($responseData);
-                break;
-
+                return $this->jsonDecode($responseData);
             case 'xml':
-                $result = $this->xmlDecode($responseData);
-                break;
-
+                return $this->xmlDecode($responseData);
             default:
-                $result = false;
-                break;
+                return false;
         }
-
-        return $result;
     }
 
     /**
