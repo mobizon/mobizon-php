@@ -19,8 +19,8 @@ API quick start guide is available at [Mobizon knowledge base website](https://h
 
 # API methods documentation
 
-You could review online documentation for detailed description of all currently available [API methods](http://docs.mobizon.com/api/), 
-input parameters, result formats, [API result codes](http://docs.mobizon.com/api/class-codes.ApiCodes.html) at [http://docs.mobizon.com/api/](http://docs.mobizon.com/api/).
+You could review online documentation for detailed description of all currently available [API methods](https://help.mobizon.com/help/api-docs), 
+input parameters, result formats, [API result codes](https://help.mobizon.com/help/api-docs/other#ApiCode) at [https://help.mobizon.com/help/api-docs](https://help.mobizon.com/help/api-docs).
 
 # Typical cases example code (PHP)
 
@@ -49,7 +49,7 @@ If you have own examples of integration, please help us in improving our code ba
 
 1. [Зарегистрироваться](https://mobizon.com/registrationcountries) в сервисе [Mobizon](https://mobizon.com/)
 2. [Включить](https://help.mobizon.com/help/sms-api/sms-api#how-to-set-up-api) в своем аккаунте доступ к API и получить ключ API.
-3. Настроить ваше ПО для отправки СМС или других необходимых Вашему бизнес-процессу действий через наше API. См. [документацию API](http://docs.mobizon.com/api/) и [примеры реализации](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
+3. Настроить ваше ПО для отправки СМС или других необходимых Вашему бизнес-процессу действий через наше API. См. [документацию API](https://help.mobizon.com/help/api-docs) и [примеры реализации](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
 
 Подробнее процесс подключения к API описан [на нашем сайте](https://help.mobizon.com/help/sms-api/sms-api).
 
@@ -59,9 +59,9 @@ If you have own examples of integration, please help us in improving our code ba
 
 # Документация по методам API
 
-Документация с описанием всех доступных на данный момент [методов API](http://docs.mobizon.com/api/), 
+Документация с описанием всех доступных на данный момент [методов API](https://help.mobizon.com/help/api-docs), 
 их входных параметров, формата возвращаемых данных, списка возможных 
-[кодов ответа API](http://docs.mobizon.com/api/class-codes.ApiCodes.html) доступна по адресу [http://docs.mobizon.com/api/](http://docs.mobizon.com/api/).
+[кодов ответа API](https://help.mobizon.com/help/api-docs/other#ApiCode) доступна по адресу [https://help.mobizon.com/help/api-docs](https://help.mobizon.com/help/api-docs).
 
 # Примеры реализации типичных сценариев
 
