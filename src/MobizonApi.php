@@ -118,14 +118,15 @@ class MobizonApi
      * @throws Mobizon_Error
      * @throws Mobizon_OpenSSL_Required
      */
-    public function __construct($params = array())
+    public function __construct()
     {
         if (!function_exists('curl_init')) {
             throw new Mobizon_Curl_Required('The curl extension is required but not currently enabled.');
         }
         $args = func_get_args();
         $argc = func_num_args();
-
+        $params = array();
+        
         if (isset($args[0])) {
             if (is_string($args[0])) {
                 $this->apiKey = $args[0];
