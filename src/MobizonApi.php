@@ -148,7 +148,7 @@ class MobizonApi
             $params = array();
         }
 
-        $params = array_intersect_key($params, array_fill_keys(static::$allowedConstructorParams, true));
+        $params = array_intersect_key($params, array_fill_keys(self::$allowedConstructorParams, true));
         foreach ($params as $key => $value) {
             $this->__set($key, $value);
         }
