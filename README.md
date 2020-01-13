@@ -8,10 +8,10 @@ Minimal required PHP version - 5.3.3
 To start sending SMS messages through Mobizon API you should do three simple steps:
 
 1. [Register account](https://mobizon.com/registrationcountries) at [Mobizon](https://mobizon.com/) website
-2. [Enable API](https://help.mobizon.com/help/sms-api/sms-api#how-to-set-up-api) in your Mobizon account settings and get API key provided
+2. [Enable API](https://help.mobizon.com/help/api-docs/sms-api#how-to-set-up-api) in your Mobizon account settings and get API key provided
 3. Setup your software to send SMS or make any other activity to fulfil your company business requirements. See [examples](https://github.com/mobizon/mobizon-php/tree/master/docs/examples) for typical scenarios.
 
-API quick start guide is available at [Mobizon knowledge base website](https://help.mobizon.com/help/sms-api/sms-api).
+API quick start guide is available at [Mobizon knowledge base website](https://help.mobizon.com/help/api-docs/sms-api).
 
 # Composer
 
@@ -48,10 +48,10 @@ If you have own examples of integration, please help us in improving our code ba
 Для начала работы с API Вам необходимо сделать три простых шага:
 
 1. [Зарегистрироваться](https://mobizon.com/registrationcountries) в сервисе [Mobizon](https://mobizon.com/)
-2. [Включить](https://help.mobizon.com/help/sms-api/sms-api#how-to-set-up-api) в своем аккаунте доступ к API и получить ключ API.
+2. [Включить](https://help.mobizon.com/help/api-docs/sms-api#how-to-set-up-api) в своем аккаунте доступ к API и получить ключ API.
 3. Настроить ваше ПО для отправки СМС или других необходимых Вашему бизнес-процессу действий через наше API. См. [документацию API](https://help.mobizon.com/help/api-docs) и [примеры реализации](https://github.com/mobizon/mobizon-php/tree/master/docs/examples).
 
-Подробнее процесс подключения к API описан [на нашем сайте](https://help.mobizon.com/help/sms-api/sms-api).
+Подробнее процесс подключения к API описан [на нашем сайте](https://help.mobizon.com/help/api-docs/sms-api).
 
 # Composer
 
