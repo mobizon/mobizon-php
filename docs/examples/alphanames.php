@@ -5,8 +5,7 @@
  * All LIST operations in another API modules have the same behavior and same parameters structure,
  * so You could just use this as starting point to get any list You need.
  *
- * API setup: https://help.mobizon.com/help/sms-api/sms-api
- * API documentation: http://docs.mobizon.com/api/
+ * API documentation: https://help.mobizon.com/help/api-docs
  */
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';

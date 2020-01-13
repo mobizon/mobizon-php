@@ -2,8 +2,7 @@
 /**
  * This example illustrates how to get your current balance amount and currency using Mobizon API.
  *
- * API setup: https://help.mobizon.com/help/sms-api/sms-api
- * API documentation: http://docs.mobizon.com/api/
+ * API documentation: https://help.mobizon.com/help/api-docs
  */
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
