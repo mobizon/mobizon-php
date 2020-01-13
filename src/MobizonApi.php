@@ -18,6 +18,8 @@ namespace Mobizon;
  *     echo 'Your balance: ' . $api->getData('currency') . $api->getData('balance');
  * }
  *
+ * More details find here: https://help.mobizon.com/help/api-docs/sms-api
+ *
  * @package Mobizon
  */
 class MobizonApi
@@ -43,9 +45,9 @@ class MobizonApi
     /**
      * @var string HTTP(S) API server address. api.mobizon.com is deprecated and will be disabled soon.
      * @deprecated Default value will be removed soon. Only OLD keys will be accepted by this endpoint till it's final shutdown.
-     * API domain depends on user site of registration and could be found in 'API connection setup guide'.
+     * API domain depends on user site of registration and could be found in API quick start guide here: https://help.mobizon.com/help/api-docs/sms-api
      */
-    protected $apiServer = 'api.mobizon.com';
+    protected $apiServer;
 
     /**
      * @var bool Force use HTTP connection instead of HTTPS. Not recommended, but if your system does not support secure connections,
@@ -104,15 +106,15 @@ class MobizonApi
      * Constructor of API class.
      *
      * @param string $apiKey User API key. API key should be passed either as first string param or as apiKey in params.
-     * @param string $apiServer User API server depends on user initial registration site. Correct API domain could be found in 'API connection setup guide'
+     * @param string $apiServer User API server depends on user initial registration site. Correct API domain could be found in API quick start guide here: https://help.mobizon.com/help/api-docs/sms-api
      * @param array $params API parameters
      *     (string)  format API responce format. Available formats: xml|json. Default: json.
      *     (integer) timeout API response timeout in seconds. Default: 30.
      *     (string)  apiVersion API version. Default: v1.
-     *     (string)  apiKey API key.
+     *     (string)  apiKey API key. Mandatory parameter.
      *     (string)  apiServer API server to send requests against. Mandatory parameter.
      *     (string)  skipVerifySSL Flag to disable SSL verification procedure during handshake with API server. Default: false (verification should be passed). Omitting if forceHTTP=true
-     *     (string)  forceHTTP Flag to forcibly disable SSL connection. Default: false (means all API requests will be made over HTTPS).
+     *     (string)  forceHTTP Flag to forcibly disable SSL connection. Default: false (means all API requests should be made over HTTPS).
      * @throws Mobizon_ApiKey_Required
      * @throws Mobizon_Curl_Required
      * @throws Mobizon_Error
@@ -130,23 +132,21 @@ class MobizonApi
         if (isset($args[0])) {
             if (is_string($args[0])) {
                 $this->apiKey = $args[0];
+            } elseif (is_array($args[0])) {
+                $params = $args[0];
             }
             if (isset($args[1])) {
                 if (is_string($args[1])) {
                     $this->apiServer = $args[1];
                 } elseif (is_array($args[1])) {
-                    $params = $args[1];
+                    $params = array_merge($params, $args[1]);
                 }
             }
             if (isset($args[2])) {
                 if (is_array($args[2])) {
-                    $params = $args[2];
-                } else {
-                    $params = array();
+                    $params = array_merge($params, $args[2]);
                 }
             }
-        } else {
-            $params = array();
         }
 
         $params = array_intersect_key($params, array_fill_keys(static::$allowedConstructorParams, true));
@@ -224,8 +224,6 @@ class MobizonApi
                 }
                 break;
             case 'skipVerifySSL':
-                $value = (bool)$value;
-                break;
             case 'forceHTTP':
                 $value = (bool)$value;
                 break;
