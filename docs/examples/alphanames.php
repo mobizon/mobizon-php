@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This example illustrates how to get full list of your alphanumeric names using Mobizon API.
  *
@@ -10,13 +11,24 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 
-$api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
+use Mobizon\MobizonApi;
 
-echo 'Fetch all user alphanames...' . PHP_EOL;
-if ($api->call('alphaname', 'list')) {
-    if ($api->hasData() && $api->hasData('items')) {
-        $data = $api->getData('items');
-        echo 'Total of ' . $api->getData('totalItemCount') . ' items found. Current subset of data:' . PHP_EOL;
+$api = new MobizonApi(
+    array(
+        "apiKey" => "YOUR_API_KEY",
+        "apiServer" => "api.mobizon.gmbh", // [ api.mobizon.gmbh, api.mobizon.kz, api.mobizon.com ]
+        "forceHTTP" => true
+    )
+);
+
+echo "Fetch all user alphanames..." . PHP_EOL;
+
+if ($api->call("alphaname", "list")) {
+    if ($api->hasData() && $api->hasData("items")) {
+        $data = $api->getData("items");
+
+        echo "Total of {$api->getData('totalItemCount')} items found. Current subset of data:" . PHP_EOL;
+
         foreach ($data as $row) {
             echo str_pad($row->alphaname->name, 30)
                 . "\t" . $row->alphanameId
@@ -25,8 +37,11 @@ if ($api->call('alphaname', 'list')) {
                 . "\t" . $row->description . PHP_EOL;
         }
     } else {
-        echo 'No alphanames found.' . PHP_EOL;
+        echo "No alphanames found." . PHP_EOL;
     }
 } else {
-    echo 'Error occurred while fetching alphanames list: [' . $api->getCode() . '] ' . $api->getMessage() . PHP_EOL;
+    var_dump([
+        "cod" => $api->getCode(),
+        "error" => $api->getMessage()
+    ]);
 }
