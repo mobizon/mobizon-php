@@ -6,18 +6,6 @@ namespace Mobizon;
  * Class MobizonApi
  *
  * @example Simplest example to use API library. More examples see in docs/examples directory
- *
- * // init api either:
- * $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz', array('format' => 'json'));
- * // or
- * $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', array('apiServer' => 'api.mobizon.kz', 'format' => 'json'));
- * // or
- * $api = new Mobizon\MobizonApi(array('apiKey' => 'KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'apiServer' => 'api.mobizon.kz', 'format' => 'json'));
- * // then call API method and get result just like this:
- * if ($api->call('User', 'GetOwnBalance') && $api->hasData('balance')) {
- *     echo 'Your balance: ' . $api->getData('currency') . $api->getData('balance');
- * }
- *
  * More details find here: https://help.mobizon.com/help/api-docs/sms-api
  *
  * @package Mobizon
@@ -115,20 +103,12 @@ class MobizonApi
      *     (string)  apiServer API server to send requests against. Mandatory parameter.
      *     (string)  skipVerifySSL Flag to disable SSL verification procedure during handshake with API server. Default: false (verification should be passed). Omitting if forceHTTP=true
      *     (string)  forceHTTP Flag to forcibly disable SSL connection. Default: false (means all API requests should be made over HTTPS).
-     * @throws Mobizon_ApiKey_Required
-     * @throws Mobizon_Curl_Required
-     * @throws Mobizon_Error
-     * @throws Mobizon_OpenSSL_Required
      */
     public function __construct()
     {
-        if (!function_exists('curl_init')) {
-            throw new Mobizon_Curl_Required('The curl extension is required but not currently enabled.');
-        }
         $args = func_get_args();
-        $argc = func_num_args();
         $params = array();
-        
+
         if (isset($args[0])) {
             if (is_string($args[0])) {
                 $this->apiKey = $args[0];
@@ -150,26 +130,15 @@ class MobizonApi
         }
 
         $params = array_intersect_key($params, array_fill_keys(static::$allowedConstructorParams, true));
+
         foreach ($params as $key => $value) {
             $this->__set($key, $value);
-        }
-
-        if (empty($this->apiKey)) {
-            throw new Mobizon_ApiKey_Required('You must provide API key in constructor params.');
-        }
-
-        if (empty($this->apiServer)) {
-            throw new Mobizon_Param_Required('You must provide API server host in constructor params.');
-        }
-
-        if (!$this->forceHTTP && !in_array('openssl', get_loaded_extensions())) {
-            throw new Mobizon_OpenSSL_Required('The OpenSSL extension is required but not currently enabled. Install OpenSSL or set forceHTTP=true in params to switch to insecure connection.');
         }
 
         $this->curl = curl_init();
         if (!$this->forceHTTP && $this->skipVerifySSL) {
             curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, false);
         }
         curl_setopt($this->curl, CURLOPT_USERAGENT, 'Mobizon-PHP/1.0.0');
         curl_setopt($this->curl, CURLOPT_HEADER, false);
@@ -192,43 +161,14 @@ class MobizonApi
             case 'format':
                 $value = strtolower($value);
                 if (!in_array($value, static::$allowedFormats)) {
-                    throw new Mobizon_Error('Format should be one of the following: ' . implode(', ',
-                            static::$allowedFormats) . '; ' . $value . ' provided.');
+                    $this->message = 'Format should be one of the following: ' . implode(
+                        ', ',
+                        static::$allowedFormats
+                    ) . '; ' . $value . ' provided.';
                 }
                 break;
-            case 'timeout':
-                $value = (int)$value;
-                if ($value < 0) {
-                    throw new Mobizon_Error('Timeout can not be less than 0, ' . $value . ' provided.');
-                }
-                break;
-            case 'apiVersion':
-                if (substr($value, 0, 1) !== 'v' || (int)substr($value, 1) < 1) {
-                    throw new Mobizon_Error('Incorrect api version: ' . $value . '.');
-                }
-                break;
-            case 'apiKey':
-                if (!preg_match('/^[a-z0-9]{40}|[a-z0-9]{70}$/i', $value)) {
-                    throw new Mobizon_Error('Incorrect api key: ' . $value . '.');
-                }
-                break;
-            case 'apiServer':
-                if (!preg_match('/^[a-z0-9][-a-z0-9]+(?:\.[a-z0-9][-a-z0-9]*)+$/i', $value)) {
-                    throw new Mobizon_Error('Incorrect api server: ' . $value . '.');
-                }
-                break;
-            case 'code':
-                $value = (int)$value;
-                if ($value < 0 || $value > 999) {
-                    throw new Mobizon_Error('Result code can not be handled: ' . $value . '.');
-                }
-                break;
-            case 'skipVerifySSL':
             case 'forceHTTP':
-                $value = (bool)$value;
-                break;
-            default:
-                throw new Mobizon_Error('Incorrect class param or you can not set protected param: ' . $key . '.');
+                $value = (bool) $value;
                 break;
         }
 
@@ -256,24 +196,19 @@ class MobizonApi
     ) {
         $this->code = -1;
         $this->data = array();
-        $this->message = '';
-
-        if (empty($provider)) {
-            throw new Mobizon_Param_Required('You must provide "provider" parameter to MobizonApi::call.');
-        }
-
-        if (empty($method)) {
-            throw new Mobizon_Param_Required('You must provide "method" parameter to MobizonApi::call.');
-        }
+        $this->message = "";
 
         $queryDefaults = array(
-            'api'    => $this->apiVersion,
-            'apiKey' => $this->apiKey,
-            'output' => $this->format
+            "api"    => $this->apiVersion,
+            "apiKey" => $this->apiKey,
+            "output" => $this->format
         );
 
         $queryParams = $this->applyParams($queryDefaults, $queryParams);
-        $url = ($this->forceHTTP ? 'http' : 'https') . '://' . $this->apiServer . '/service/' . strtolower($provider) . '/' . strtolower($method) . '?';
+        $endPoint = ($this->apiServer) ? $this->apiServer : "api.mobizon.gmbh";
+        $verifySSL = ($this->forceHTTP) ? "http" : "https";
+        $url =  "{$verifySSL}://{$endPoint}/service/" . strtolower($provider) . "/" . strtolower($method) . "?";
+
         curl_setopt($this->curl, CURLOPT_URL, $url . http_build_query($queryParams));
         if (!empty($postParams)) {
             curl_setopt($this->curl, CURLOPT_POST, true);
@@ -284,15 +219,18 @@ class MobizonApi
 
         $result = curl_exec($this->curl);
         $error = curl_error($this->curl);
+
+        if ($result === '{}') {
+            $this->message = "Bad API result: server returned unexpected result.";
+            return;
+        }
+
         if ($error) {
-            throw new Mobizon_Http_Error('API call failed: ' . $error . '.');
+            $this->message = "API call failed: {$error}.";
+            return;
         }
 
         $result = $this->decode($result);
-
-        if (!is_object($result)) {
-            throw new Mobizon_Http_Error('Bad API result: server returned unexpected result.');
-        }
 
         $this->code = $result->code;
         $this->data = $result->data;
@@ -426,38 +364,12 @@ class MobizonApi
     protected function xmlDecode($string)
     {
         $xml = simplexml_load_string($string);
+
         if (!$xml) {
-            throw new Mobizon_XML_Error('Incorrect XML response.');
+            $this->message = "Incorrect XML response.";
+            return;
         }
 
         return $xml;
     }
-}
-
-class Mobizon_Error extends \Exception
-{
-}
-
-class Mobizon_Param_Required extends Mobizon_Error
-{
-}
-
-class Mobizon_Http_Error extends Mobizon_Error
-{
-}
-
-class Mobizon_OpenSSL_Required extends Mobizon_Error
-{
-}
-
-class Mobizon_Curl_Required extends Mobizon_Error
-{
-}
-
-class Mobizon_ApiKey_Required extends Mobizon_Error
-{
-}
-
-class Mobizon_XML_Error extends Mobizon_Error
-{
 }

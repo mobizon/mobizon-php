@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This example illustrates how to send single SMS message using Mobizon API.
  *
@@ -7,29 +8,43 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 
-$api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
+use Mobizon\MobizonApi;
 
-echo 'Send message...' . PHP_EOL;
-$alphaname = 'TEST';
-if ($api->call('message',
-    'sendSMSMessage',
+$api = new MobizonApi(
     array(
-        'recipient' => '77770000000',
-        'text' => 'Test sms message',
-        'from' => $alphaname,
-        //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
-    ))
-) {
-    $messageId = $api->getData('messageId');
-    echo 'Message created with ID:' . $messageId . PHP_EOL;
+        "apiKey" => "YOUR_API_KEY",
+        "apiServer" => "api.mobizon.gmbh", // [ api.mobizon.gmbh, api.mobizon.kz, api.mobizon.com ]
+        "forceHTTP" => true
+    )
+);
+
+echo "Send message..." . PHP_EOL;
+
+$alphaname = 0; // Optional, if you don"t have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
+
+$recipient = [
+    "recipient" => "11999000000", // [DDD + NUMBER Ex: 11999000000]
+    "text" => "TEST SMS API MOBIZON",
+    "from" => $alphaname,
+];
+
+if ($api->call(
+    "message",
+    "sendSMSMessage",
+    $recipient
+)) {
+    $messageId = $api->getData("messageId");
+
+    echo "Message created with ID:{$messageId}" . PHP_EOL;
 
     if ($messageId) {
-        echo 'Get message info...' . PHP_EOL;
+        echo "Get message info..." . PHP_EOL;
+
         $messageStatuses = $api->call(
-            'message',
-            'getSMSStatus',
+            "message",
+            "getSMSStatus",
             array(
-                'ids' => array($messageId, '13394', '11345', '4393')
+                "ids" => array($messageId, "13394", "11345", "4393")
             ),
             array(),
             true
@@ -37,11 +52,17 @@ if ($api->call('message',
 
         if ($api->hasData()) {
             foreach ($api->getData() as $messageInfo) {
-                echo 'Message # ' . $messageInfo->id . " status:\t" . $messageInfo->status . PHP_EOL;
+                var_dump([
+                    "cod" => $messageInfo->id,
+                    "message" => $recipient['text'],
+                    "status" => $messageInfo->status
+                ]);
             }
         }
     }
 } else {
-    echo 'An error occurred while sending message: [' . $api->getCode() . '] ' . $api->getMessage() . 'See details below:' . PHP_EOL;
-    var_dump(array($api->getCode(), $api->getData(), $api->getMessage()));
+    var_dump([
+        "cod" => $api->getCode(),
+        "error" => $api->getMessage()
+    ]);
 }

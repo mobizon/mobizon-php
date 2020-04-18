@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This example illustrates how to send mass SMS campaign using Mobizon API.
  *
@@ -7,14 +8,25 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MobizonApi.php';
 
-try {
-    $api = new Mobizon\MobizonApi('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK', 'api.mobizon.kz');
+use Mobizon\MobizonApi;
 
+try {
+
+    $api = new MobizonApi(
+        array(
+            "apiKey" => "YOUR_API_KEY",
+            "apiServer" => "api.mobizon.gmbh", // [ api.mobizon.gmbh, api.mobizon.kz, api.mobizon.com ]
+            "forceHTTP" => true
+        )
+    );
     $alphaname = 'TEST';
     $smsText = 'Test SMS message text!';
 
     echo 'Create massive campaign...' . PHP_EOL;
-    if (!$api->call('campaign', 'create',
+
+    if (!$api->call(
+        'campaign',
+        'create',
         array(
             'data' => array(
                 'text' => $smsText,
@@ -23,8 +35,7 @@ try {
                 'msgType' => 'SMS'
             )
         )
-    )
-    ) {
+    )) {
         echo 'Campaign not created, unhandled errors.' . PHP_EOL;
         die(__LINE__);
     }
@@ -55,12 +66,15 @@ try {
         }
         $counter += 500;
 
-        if (!$api->call('campaign',
+        if (
+            !$api->call(
+                'campaign',
                 'addrecipients',
                 array(
                     'id' => $campaignId,
                     'recipients' => $recipientsList
-                )) && (!in_array($api->getCode(), array(0, 98, 99)) || !$api->hasData())
+                )
+            ) && (!in_array($api->getCode(), array(0, 98, 99)) || !$api->hasData())
         ) {
             echo 'An error occurred while adding recipients: [' . $api->getCode() . '] ' . $api->getMessage() . ' See details below:' . PHP_EOL;
             var_dump(array($api->getCode(), $api->getData(), $api->getMessage()));
@@ -77,7 +91,6 @@ try {
             case 99;
                 echo 'Recipients portion was not added.' . PHP_EOL;
                 break;
-
         }
 
         foreach ($api->getData() as $item) {
@@ -91,12 +104,13 @@ try {
 
     //send campaign
     echo 'Confirm campaign send...' . PHP_EOL;
-    if (!$api->call('campaign',
+    if (!$api->call(
+        'campaign',
         'send',
         array(
             'id' => $campaignId
-        ))
-    ) {
+        )
+    )) {
         echo 'An error occurred while confirming campaign send: [' . $api->getCode() . '] ' . $api->getMessage() . ' See details below:' . PHP_EOL;
         var_dump($api->getData());
         die(__LINE__);
