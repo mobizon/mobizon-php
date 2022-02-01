@@ -103,6 +103,6 @@ try {
     }
     echo 'Campaign #' . $campaignId . ' has been sent.' . PHP_EOL;
 } catch (\Exception $e) {
-    echo 'An error occured in communication process: ' . $e->getMessage() . PHP_EOL;
+    echo 'An error occurred in communication process: ' . $e->getMessage() . PHP_EOL;
     die(__LINE__);
 }
